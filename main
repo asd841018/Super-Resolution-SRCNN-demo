@@ -1,0 +1,28 @@
+from keras.models import Sequential
+from keras.layers import Conv2D
+from keras.optimizers import Adam
+from skimage.measure import compare_ssim as ssim
+from matplotlib import pyplot as plt
+import cv2
+import numpy as np
+import math
+import os
+import h5py
+
+def prepare_images(path, factor):
+    for file in os.listdir(path):
+        img = cv2.imread(path + '/' + file)
+        h, w, _ = img.shape
+        new_height = h / factor
+        new_width = w / factor
+        # resize the image - down
+        img = cv2.resize(img, (int(new_width), int(new_height)), interpolation = cv2.INTER_LINEAR)
+        
+        # resize the image - up
+        img = cv2.resize(img, (w, h), interpolation = cv2.INTER_LINEAR)
+        
+        # save the image
+        print('Saving {}'.format(file))
+        cv2.imwrite('images/{}'.format(file), img)
+
+prepare_images('Source/', 2)
